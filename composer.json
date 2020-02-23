@@ -10,7 +10,8 @@
         }
     ],
     "require": {
-        "php": "^7.2.5"
+        "php": "^7.2.5",
+        "contentful/contentful-bundle": "^4.0"
     },
     "autoload": {
         "psr-4": {
