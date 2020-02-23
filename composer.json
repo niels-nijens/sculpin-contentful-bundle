@@ -1,0 +1,23 @@
+{
+    "name": "niels-nijens/sculpin-contentful-bundle",
+    "description": "Contentful integration for the Sculpin Static Site Generator.",
+    "type": "sculpin-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Niels Nijens",
+            "email": "nijens.niels@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.2.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Nijens\\SculpinContentfulBundle\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
