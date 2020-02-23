@@ -11,7 +11,8 @@
     ],
     "require": {
         "php": "^7.2.5",
-        "contentful/contentful-bundle": "^4.0"
+        "contentful/contentful-bundle": "^4.0",
+        "sculpin/sculpin": "^3.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.16"
