@@ -35,6 +35,8 @@ final class NijensSculpinContentfulExtension extends Extension
         $configuration = new Configuration($container->getParameter('kernel.debug'));
         $config = $this->processConfiguration($configuration, $configs);
 
+        $container->setParameter('nijens_sculpin_contentful.assets.output_path', $config['assets']['output_path']);
+
         $loader = new XmlFileLoader($container, new FileLocator(\dirname(__DIR__).'/Resources/config'));
         $loader->load('services.xml');
 

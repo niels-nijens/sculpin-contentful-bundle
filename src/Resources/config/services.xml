@@ -9,6 +9,7 @@
 
         <service id="nijens_sculpin_contentful.data_source" class="Nijens\SculpinContentfulBundle\Source\CompositeDataSource">
             <argument type="service" id="Contentful\Delivery\Client\ClientInterface" />
+            <argument>%nijens_sculpin_contentful.assets.output_path%</argument>
 
             <tag name="sculpin.data_source" />
         </service>

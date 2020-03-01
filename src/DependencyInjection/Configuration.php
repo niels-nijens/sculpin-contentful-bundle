@@ -32,6 +32,16 @@ class Configuration extends ContentfulConfiguration implements ConfigurationInte
         $treeBuilder = new TreeBuilder('nijens_sculpin_contentful');
 
         $rootNode = $treeBuilder->getRootNode();
+        $rootNode->children()
+            ->arrayNode('assets')
+                ->children()
+                    ->scalarNode('output_path')
+                        ->isRequired()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end();
+
         $rootNode->append(parent::getConfigTreeBuilder()->getRootNode());
 
         return $treeBuilder;

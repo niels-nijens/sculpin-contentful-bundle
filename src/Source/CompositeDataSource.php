@@ -30,11 +30,17 @@ class CompositeDataSource extends SculpinCompositeDataSource
     private $client;
 
     /**
+     * @var string
+     */
+    private $assetsPath;
+
+    /**
      * Creates a new {@see CompositeDataSource} instance.
      */
-    public function __construct(ClientInterface $client)
+    public function __construct(ClientInterface $client, string $assetsPath)
     {
         $this->client = $client;
+        $this->assetsPath = $assetsPath;
 
         parent::__construct([]);
     }
@@ -53,6 +59,8 @@ class CompositeDataSource extends SculpinCompositeDataSource
 
                 $this->addDataSource($contentTypeDataSource);
             }
+
+            $this->addDataSource(new AssetDataSource($this->client, $this->assetsPath));
         }
 
         parent::refresh($sourceSet);
