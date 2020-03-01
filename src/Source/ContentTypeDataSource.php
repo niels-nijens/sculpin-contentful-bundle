@@ -26,7 +26,7 @@ use Sculpin\Core\Source\SourceSet;
  *
  * @author Niels Nijens <nijens.niels@gmail.com>
  */
-class ContentTypeDataSource implements DataSourceInterface
+final class ContentTypeDataSource implements DataSourceInterface
 {
     /**
      * @var ContentTypeInterface
@@ -58,11 +58,11 @@ class ContentTypeDataSource implements DataSourceInterface
      */
     public function dataSourceId(): string
     {
-        return 'Contentful:'.$this->contentType->getName();
+        return 'ContentfulSource:ContentTypeDataSource:'.$this->contentType->getName();
     }
 
     /**
-     * Fetches new/updates {@see Entry} instances and merges them into the {@see SourceSet} as {@see EntrySource}.
+     * Fetches new/updated {@see Entry} instances and merges them into the {@see SourceSet} as {@see EntrySource}.
      */
     public function refresh(SourceSet $sourceSet): void
     {
