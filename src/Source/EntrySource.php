@@ -23,7 +23,7 @@ use Sculpin\Core\Source\DataSourceInterface;
  *
  * @author Niels Nijens <nijens.niels@gmail.com>
  */
-class EntrySource extends AbstractSource
+final class EntrySource extends AbstractSource
 {
     /**
      * @var Entry
@@ -31,7 +31,7 @@ class EntrySource extends AbstractSource
     private $entry;
 
     /**
-     * Creates a new ContentfulEntrySource instance.
+     * Creates a new EntrySource instance.
      */
     public function __construct(DataSourceInterface $dataSource, Entry $entry, bool $hasChanged = false)
     {
@@ -56,8 +56,16 @@ class EntrySource extends AbstractSource
 
         $originalData = $this->data;
 
-        $this->data = new Data($this->entry->all());
-        $this->data->set('contentful_type', $this->entry->getContentType()->getName());
+        $this->data = new Data($this->entry->all(null, false));
+
+        $this->data->set('id', $this->entry->getId());
+        $this->data->set('contentful:id', $this->entry->getId());
+        $this->data->set('contentful:content_type', $this->entry->getContentType()->getName());
+        $this->data->set('contentful:revision', $this->entry->getSystemProperties()->getRevision());
+        $this->data->set('contentful:created_at', $this->entry->getSystemProperties()->getCreatedAt()->formatForJson());
+        $this->data->set('contentful:updated_at', $this->entry->getSystemProperties()->getUpdatedAt()->formatForJson());
+
+        $this->data->set('calculated_date', strtotime($this->data->get('contentful:updated_at')));
 
         if ($originalData) {
             $this->data->import($originalData, false);
