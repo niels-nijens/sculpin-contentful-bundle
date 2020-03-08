@@ -41,6 +41,31 @@ class Configuration extends ContentfulConfiguration implements ConfigurationInte
                     ->end()
                 ->end()
             ->arrayNode('content_types')
+                ->requiresAtLeastOneElement()
+                ->beforeNormalization()
+                    ->ifArray()
+                        ->then(function (array $contentTypes) {
+                            foreach ($contentTypes as $key => $contentType) {
+                                if ($contentType === null) {
+                                    $contentType = [];
+                                }
+
+                                if (is_array($contentType) === false) {
+                                    continue;
+                                }
+
+                                $contentTypes[$key] = array_replace(
+                                    [
+                                        'name' => $key,
+                                        'content_type' => $key
+                                    ],
+                                    $contentType
+                                );
+                            }
+
+                            return $contentTypes;
+                        })
+                    ->end()
                 ->useAttributeAsKey('name', false)
                 ->arrayPrototype()
                     ->children()
