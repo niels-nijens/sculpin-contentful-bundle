@@ -40,6 +40,42 @@ class Configuration extends ContentfulConfiguration implements ConfigurationInte
                         ->end()
                     ->end()
                 ->end()
+            ->arrayNode('content_types')
+                ->useAttributeAsKey('name', false)
+                ->arrayPrototype()
+                    ->children()
+                        ->scalarNode('name')
+                            ->info('The name used in Sculpin for this content type')
+                            ->isRequired()
+                            ->cannotBeEmpty()
+                            ->end()
+                        ->scalarNode('content_type')
+                            ->info('The name of the content type in Contentful.')
+                            ->isRequired()
+                            ->cannotBeEmpty()
+                            ->end()
+                        ->booleanNode('enabled')
+                            ->info('Indicating if creating pages for this content type is enabled.')
+                            ->defaultTrue()
+                            ->end()
+                        ->scalarNode('filename_property')
+                            ->info('The Contentful entry property used as filename for the EntrySource.')
+                            ->defaultValue('id')
+                            ->end()
+                        ->scalarNode('relative_path')
+                            ->info(
+                                'The relative path used for the EntrySource. Properties from the Contentful entry '.
+                                'can be used for dynamic path generation. For example: {{contentful:content_type}} '.
+                                'will add the content type to the path.'
+                            )
+                            ->defaultValue('{{contentful:content_type}}/{{filename}}')
+                            ->end()
+                        ->arrayNode('additional_metadata')
+                            ->info('Allows adding additional metadata to an EntrySource eg. a layout property.')
+                            ->variablePrototype()
+                            ->end()
+                    ->end()
+                ->end()
             ->end();
 
         $rootNode->append(parent::getConfigTreeBuilder()->getRootNode());
