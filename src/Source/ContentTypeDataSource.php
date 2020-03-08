@@ -29,9 +29,9 @@ use Sculpin\Core\Source\SourceSet;
 final class ContentTypeDataSource implements DataSourceInterface
 {
     /**
-     * @var ContentTypeInterface
+     * @var ContentTypeConfiguration
      */
-    private $contentType;
+    private $contentTypeConfiguration;
 
     /**
      * @var ClientInterface
@@ -46,10 +46,12 @@ final class ContentTypeDataSource implements DataSourceInterface
     /**
      * Creates a new ContentTypeDataSource instance.
      */
-    public function __construct(ContentTypeInterface $contentType, ClientInterface $client)
-    {
-        $this->contentType = $contentType;
+    public function __construct(
+        ClientInterface $client,
+        ContentTypeConfiguration $contentTypeConfiguration
+    ) {
         $this->client = $client;
+        $this->contentTypeConfiguration = $contentTypeConfiguration;
         $this->sourceUpdatedAt = new DateTime('1970-01-01T00:00:00Z');
     }
 
@@ -58,7 +60,7 @@ final class ContentTypeDataSource implements DataSourceInterface
      */
     public function dataSourceId(): string
     {
-        return 'ContentfulSource:ContentTypeDataSource:'.$this->contentType->getName();
+        return 'ContentfulSource:ContentTypeDataSource:'.$this->contentTypeConfiguration->getName();
     }
 
     /**
@@ -69,7 +71,7 @@ final class ContentTypeDataSource implements DataSourceInterface
         $sourceUpdatedAt = $this->sourceUpdatedAt;
         $this->sourceUpdatedAt = new DateTime();
 
-        $query = (new Query())->setContentType($this->contentType->getId())
+        $query = (new Query())->setContentType($this->contentTypeConfiguration->getContentType()->getId())
             ->where('sys.updatedAt[gte]', $sourceUpdatedAt->format(DateTime::ISO8601));
 
         foreach ($this->client->getEntries($query) as $entry) {

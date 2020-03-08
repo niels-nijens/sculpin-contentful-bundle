@@ -73,10 +73,7 @@ class CompositeDataSource extends SculpinCompositeDataSource
     {
         $contentTypeConfigurations = $this->createContentTypeConfigurations();
         foreach ($contentTypeConfigurations as $contentTypeConfiguration) {
-            $contentTypeDataSource = new ContentTypeDataSource(
-                $contentTypeConfiguration->getContentType(),
-                $this->client
-            );
+            $contentTypeDataSource = new ContentTypeDataSource($this->client, $contentTypeConfiguration);
 
             $this->addDataSource($contentTypeDataSource);
         }
