@@ -30,11 +30,23 @@ class CompositeDataSource extends SculpinCompositeDataSource
     private $client;
 
     /**
+     * @var array
+     */
+    private $contentTypes;
+
+    /**
+     * @var string
+     */
+    private $assetsPath;
+
+    /**
      * Creates a new {@see CompositeDataSource} instance.
      */
-    public function __construct(ClientInterface $client)
+    public function __construct(ClientInterface $client, array $contentTypes, string $assetsPath)
     {
         $this->client = $client;
+        $this->contentTypes = $contentTypes;
+        $this->assetsPath = $assetsPath;
 
         parent::__construct([]);
     }
@@ -46,15 +58,49 @@ class CompositeDataSource extends SculpinCompositeDataSource
     {
         $dataSources = $this->dataSources();
         if (empty($dataSources)) {
-            $contentTypes = $this->client->getContentTypes();
+            $this->addContentTypesAsDataSource();
 
-            foreach ($contentTypes as $contentType) {
-                $contentTypeDataSource = new ContentTypeDataSource($contentType, $this->client);
-
-                $this->addDataSource($contentTypeDataSource);
-            }
+            $this->addDataSource(new AssetDataSource($this->client, $this->assetsPath));
         }
 
         parent::refresh($sourceSet);
+    }
+
+    /**
+     * Adds the configured content types as {@see ContentTypeDataSource}.
+     */
+    private function addContentTypesAsDataSource(): void
+    {
+        $contentTypeConfigurations = $this->createContentTypeConfigurations();
+        foreach ($contentTypeConfigurations as $contentTypeConfiguration) {
+            $contentTypeDataSource = new ContentTypeDataSource($this->client, $contentTypeConfiguration);
+
+            $this->addDataSource($contentTypeDataSource);
+        }
+    }
+
+    /**
+     * Returns a list of ContentTypeConfiguration instances for the configured content types.
+     *
+     * @return ContentTypeConfiguration[]
+     */
+    private function createContentTypeConfigurations(): array
+    {
+        $contentTypeConfigurations = [];
+
+        foreach ($this->contentTypes as $contentTypeName => $contentType) {
+            $contentfulContentType = $this->client->getContentType($contentType['content_type']);
+
+            $contentTypeConfigurations[] = new ContentTypeConfiguration(
+                $contentTypeName,
+                $contentfulContentType,
+                $contentType['enabled'],
+                $contentType['filename_property'],
+                $contentType['relative_path'],
+                $contentType['additional_metadata']
+            );
+        }
+
+        return $contentTypeConfigurations;
     }
 }
